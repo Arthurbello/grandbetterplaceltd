@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src ="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src ="http://code.angularjs.org/1.2.0-rc.2/angular-animate.js" type="text/javascript" charset="utf-8"></script>
+    <script src ="http://code.angularjs.org/1.2.0-rc.2/angular-route.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/jquery.backstretch.min.js"></script>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+<script src="/js/buy.js"></script>
+    <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.8.1/jquery.validate.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/avgrund.css">
+    <link rel="stylesheet" href="/css/skeuocard.reset.css" />
+    <link rel="stylesheet" href="/css/skeuocard.css" />
+    <link rel="stylesheet" href="/css/demo.css">
+    <script src="/js/cssua.min.js"></script>
+    <script src="/js/demo.fix.js"></script>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+    <script src="/js/classie.js"></script>
+    <script src="/js/modernizr.custom.js"></script>
+    <script src="/js/skeuocard.min.js"></script>
+        <script type ="text/javascript" src="/socket.io/socket.io.js"></script>
+        <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+    <script>
+    function outisde() {
+        // $('.face').click(function(){
+        //     alert('yolo');
+        //   })
+    }
+
+    //  inject the ngRoute dependency in the module.
+    var myApp = angular.module('myApp', ['ngAnimate', 'ngRoute']);
+
+    //  use the config method to set up routing:
+    myApp.config(function ($routeProvider) {
+      $routeProvider
+        .when('/',{
+            templateUrl: 'partials/home.html'
+        })
+        .when('/partial2',{
+            templateUrl: 'partials/donate.html'
+        })
+        .otherwise({
+          redirectTo: '/'
+        });
+    }).animation('.reveal-animation', function() {
+  return {
+    enter: function(element, done) {
+      element.css('display', 'none');
+      element.fadeIn(300, done);
+
+    },
+    leave: function(element, done){
+      element.fadeOut(300, done)
+
+    }
+  }
+});
+    //  build the controllers
+    myApp.controller('view1Controller', function ($scope) {
+      $scope.sports = ['golf', 'basketball', 'hockey', 'tennis', 'football'];
+    });
+    myApp.controller('view2Controller', function ($scope) {
+      Stripe.setPublishableKey('pk_test_F8rjks04ClaX8GkuyZeXK5FN');
+       var socket = io.connect();
+      $scope.message = 'We are using another controller';
+      outisde();
+      // function stripeResponseHandler(status, response) {
+      //   var form = $('#skeuocard');
+
+      //   if (response.error) {
+      //     // Show the errors on the form
+      //     form.find('.payment-errors').text(response.error.message);
+      //     // $form.find('button').prop('disabled', false);
+      //   } else {
+      //     // response contains id and card, which contains additional card details
+      //     var token = response.id;
+      //     console.log(token)
+      //     socket.emit('token', {use: token, amount: $('#card-amount').val()});
+      //   }
+      // }
+      // setInterval(function(){ console.log('yolo ' + $('#cc_number').val() ); }, 3000);
+      var isBrowserCompatible = 
+          $('html').hasClass('ua-ie-10') ||
+          $('html').hasClass('ua-webkit') ||
+          $('html').hasClass('ua-firefox') ||
+          $('html').hasClass('ua-opera') ||
+          $('html').hasClass('ua-chrome');
+
+        if(isBrowserCompatible){
+          window.card = new Skeuocard($("#skeuocard"), {
+            debug: false
+          });
+        }
+        $('#submit_card').click(function() {
+          console.log('button clicked');
+            $('#skeuocard').submit();
+        })
+          var form = $('#skeuocard');
+          form.on('submit', function() {
+          console.log('function activated');
+
+              // First submit the card information to Stripe to get back a token
+              Stripe.card.createToken(form, function(status, response) {
+                  var token = response.id;
+                  console.log(token);
+
+                  // Save the token into a hidden input field
+                  form.append($('<input type="hidden" name="stripeToken" />').val(token));
+                  form.append($('<input type="hidden" name="amount" />').val($('#card-amount').val()));
+                  // Now submit the form to our server so it can make the charge against the token
+                  form.get(0).submit();
+              });
+              return false;
+          });
+            // $("#skeuocard").submit(function(event) {
+            //         // console.log('hi')
+            //        //  Stripe.card.createToken({
+            //        //    number: $('#cc_number').val(),
+            //        //    cvc: $('#cc_cvc').val(),
+            //        //    exp_month: $('#cc_exp_month').val(),
+            //        //    exp_year: $('#cc_exp_year').val()
+            //        //  }, stripeResponseHandler);
+            //        // // console.log(token);
+            //        // return false;
+            //     })
+        })
+  
+    </script>
+    <style type="text/css">
+    html {
+        background-color: rgb(37, 76, 95);
+    }
+    #options {
+                display: inline-block;
+        text-align: center;
+        width: 50%;
+    }
+
+    #logo {
+        display: inline-block;
+        width: 49%;
+    }
+    @font-face {
+    font-family: code;
+    src: url(/fonts/CODE_Bold.otf);
+}
+    @font-face {
+    font-family: print;
+    src: url(/fonts/Opificio.TTF);
+}
+    #menu {
+        background-color: white;
+        /*position: fixed;*/
+    }
+
+    .hvr-fade {
+/*        margin: 0 20px;
+*/        color: #2098d1;
+        text-decoration: none;
+        padding: 40px 0;
+        width: 120px;
+      display: inline-block;
+      vertical-align: middle;
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+      box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      -moz-osx-font-smoothing: grayscale;
+      overflow: hidden;
+      -webkit-transition-duration: 0.3s;
+      transition-duration: 0.3s;
+      -webkit-transition-property: color, background-color;
+      transition-property: color, background-color;
+    }
+    .hvr-fade:visited {
+        color: #2098d1;
+    }
+    .hvr-fade:hover, .hvr-fade:focus, .hvr-fade:active {
+      background-color: #2098d1;
+      color: white;
+
+    }
+    #holder {
+        background-color: white;
+        min-height: 700px;
+        width: 60%;
+        margin: 50px auto 0 auto;
+        padding: 20px;
+        text-align: center;
+    }
+    html {
+        display: none;
+    }
+        body {
+            padding: 0;
+            margin: 0;
+            font-family: print;
+            
+           /* background: url(/background_image/back.jpg) no-repeat center center fixed;
+
+    -webkit-background-size: cover;
+
+    -moz-background-size: cover;
+
+    -o-background-size: cover;*/
+
+        }
+    </style>
+  </head>
+  <body>
+    <div ng-app='myApp'>
+        <div id = 'menu'>
+            <div id='logo'>
+            </div>
+            <div id='options'>
+                <a class='hvr-fade' href="#/">Home</a>
+                  <a class='hvr-fade' href="#/partial2">Donate</a>
+                  <a class='hvr-fade' id='hello' href="#/modal">Contact</a>
+            </div>
+        </div>
+            <div id='holder'>
+                <div ng-view="" class="reveal-animation">
+                </div>
+            </div>
+    </div>
+    <script type="text/javascript" src="js/jquery.avgrund.js"></script>
+    <script type="text/javascript" src="js/jquery.backstretch.min.js"></script>
+
+    <script>
+    $('html').fadeIn('slow');
+
+    $.backstretch([
+      "/background_image/back.jpg"
+    , "/background_image/back2.jpg"
+    , "/background_image/back3.jpg"
+    , "/background_image/back4.jpg"
+    , "/background_image/back5.jpg"
+  ], {duration: 3000, fade: 1050});
+    
+    $(function() {
+        $('#hello').avgrund({
+            width: 640,
+            height: 350,
+            holderClass: 'custom',
+            showClose: true,
+            showCloseText: 'X',
+            onBlurContainer: '#holder',
+            template: '<p>So implement your design and place content here! If you want to close modal, please hit "Esc", click somewhere on the screen or use special button.</p>' +
+            '<div>' +
+            '</div>'
+        });
+    });
+    </script>
+  </body>
+</html>

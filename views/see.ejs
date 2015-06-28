@@ -1,0 +1,21 @@
+<head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+</head>
+<p><%= users.name %></p>
+
+<form hidden method = 'post' action = '/update/<%= users.id %>'>
+<input name='name' value='<%= users.name %>'>
+<input name='submit' value='Submit' type='submit'>
+</form>
+
+<a href='/delete/<%= users.id %>'> Delete </a>
+
+
+
+<script>
+$('p').click(function() {
+	$(this).css('display', 'none')
+	$('form').css('display', 'block')
+})
+</script>

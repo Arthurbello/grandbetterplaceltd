@@ -1,0 +1,167 @@
+ <head>
+ 	<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+ 	<link rel="stylesheet" href="/css/component.css">
+ 	<link rel="stylesheet" href="/css/component.css">
+
+
+ 	<style type="text/css">
+
+
+ 		img {
+ 			width: 100px;
+ 			border-radius: 10px;
+ 			height: 70px;
+ 		}
+
+ 		.images {
+ 			background-color: rgb(0, 128, 128);
+ 			display: inline-block;
+ 			width: 80px;
+ 			padding: 15px;
+ 			margin: 20px;
+ 			color: white;
+ 			min-width: 100px;
+ 		}
+ 		#holder2 {
+ 			text-align: left;
+ 			border-radius: 5px;
+ 			margin: 0 auto;
+ 			width: 60%;
+ 			background: linear-gradient(#3D9BCA, #6CAAC9, #3D9BCA);
+ 		}
+ 		form {
+ 			padding: 20px 20px 90px 20px;
+ 		}
+ 		input{
+ 			line-height: 1.3em;
+ 		}
+ 		h1{
+ 			padding: 20px 0;
+ 		}
+ 		#skeuocard {
+ 			margin: 0 auto;
+ 		}
+
+ 		#steps {
+ 			text-align: center;
+ 			color: white;
+ 		}
+ 		#listed_steps {
+ 			color: white;
+ 			text-align: center;
+ 		}
+
+ 		.headers {
+ 			width: 40%;
+ 			margin: 0 auto;
+ 			text-align: center;
+ 		}
+ 		#button_holder {
+ 			text-align: center;
+ 			margin: 0 auto;
+ 		}
+
+ 		.headers h2 {
+ 			color: white;
+ 		}
+
+ 	</style>
+ </head>
+ <div ng-controller='view2Controller'>
+ 	<div id='holder2'>
+ 		 		<h1 style='text-align: center; color: #2098d1; background-color: white; border: solid 4px #2098d1; border-radius: 10px'> Donate </h1>
+ 		 		<p id='steps'>Steps</p>
+ 		 		<div id='listed_steps'>
+ 		 			<p>1. Enter an amount(in NGN)</p>
+ 		 			<p>2. Type in credit/debit card number</p>
+ 		 			<p>3. Type in Expiration Date</p>
+ 		 			<p>4. Type in Name on Card</p>
+ 		 			<p>5. Type in CVC (back of card)</p>
+ 		 		</div>
+ 		 		<br>
+ 		 		<div class='headers'>
+ 		 			<h2>Amount</h2>
+ 		 			<form class="pure-form">
+ 		 			<input id='card-amount' placeholder='$0.00' type='text'>
+ 		 		</form>
+ 		 		</div><br>
+ 		 		
+ 		 		<!-- <form id="checkout" method="post" action="/checkout">
+  <div id="payment-form"></div>
+  <input type="submit" value="Pay $10">
+</form> -->
+             <!-- <form id="card-tds-form" action="#" method="POST">
+                        <label>Credit card number</label>
+                        <input class="card-number" type="text" size="20" value="4012888888881881" />
+                        <br>
+                        <label>CVC</label>
+                        <input class="card-cvc" type="text" maxlength="4" size="4" value="123" />
+                        <br>
+                        <label>Card holder</label>
+                        <input class="card-holdername" type="text" size="20" value="Max Mustermann" />
+                        <br>
+                        <label>Expiry (MM/YYYY)</label>
+                        <input class="card-expiry-month" type="text" size="2" value="12" maxlength="2" />
+                        <input class="card-expiry-year" type="text" size="4" value="2015" maxlength="4" style="margin-left: 0px;" />
+                        <br>
+                        <label>Amount</label>
+                        <input class="card-amount" type="text" size="4" value="123.45" />
+                        <br>
+                        <label>Currency</label>
+                        <input class="card-currency" type="text" size="4" value="NGN" />
+                        <br>
+                        <button class="submit-button" type="submit">Submit</button>
+                    </form> -->
+                    <div class='headers'>
+                    	<h2>Card Info</h2>
+                    </div>
+                     	<form class="credit-card-input no-js card-tds-form" id="skeuocard" action="/charge" method="POST">
+			            <p class="no-support-warning">
+			              Either you have Javascript disabled, or you're using an unsupported browser, amigo! That's why you're seeing this old-school credit card input form instead of a fancy new Skeuocard. On the other hand, at least you know it gracefully degrades...
+			            </p>
+			            <label for="cc_type">Card Type</label>
+			            <select name="cc_type">
+			              <option value="">...</option>
+			              <option value="visa">Visa</option>
+			              <option value="discover">Discover</option>
+			              <option value="mastercard">MasterCard</option>
+			              <option value="maestro">Maestro</option>
+			              <option value="jcb">JCB</option>
+			              <option value="unionpay">China UnionPay</option>
+			              <option value="amex">American Express</option>
+			              <option value="dinersclubintl">Diners Club</option>
+			            </select>
+			            <label for="cc_number">Card Number</label>
+			            <input type="text" data-stripe="number" name="cc_number" id="cc_number" placeholder="XXXX XXXX XXXX XXXX" maxlength="19" size="19">
+			            <label for="cc_exp_month">Expiration Month</label>
+			            <input type="text" data-stripe="exp-month" name="cc_exp_month" id="cc_exp_month" placeholder="00">
+			            <label for="cc_exp_year">Expiration Year</label>
+			            <input type="text" name="cc_exp_year" data-stripe="exp-year" id="cc_exp_year" placeholder="00">
+			            <label for="cc_name">Cardholder's Name</label>
+			            <input type="text" name="cc_name" id="cc_name" placeholder="John Doe">
+			            <label for="cc_cvc">Card Validation Code</label>
+			            <input type="text" data-stripe="cvc" name="cc_cvc" id="cc_cvc" placeholder="123" maxlength="3" size="3">	  
+			            </form>
+			            <div id='button_holder'><button class="pure-button submit-button btn btn-1 btn-1a" id='submit_card' type="submit">Submit</button></div>
+			            <!-- <div class="payment-token" style="color:green;">Token:</div> -->
+<div class="payment-errors" style="color:red;"></div>
+ 		<!-- <form action="/stripe" method="POST" id="payment-form">
+	      <div class="form-row">
+	        <label>Card Number</label>
+	        <input type="text" size="20" autocomplete="off" class="card-number"/>
+	      </div>
+	      <div class="form-row">
+	        <label>CVC</label>
+	        <input type="text" size="4" autocomplete="off" class="card-cvc"/>
+	      </div>
+	      <div class="form-row">
+	        <label>Expiration (MM/YYYY)</label>
+	        <input type="text" size="2" class="card-expiry-month"/>
+	        <span> / </span>
+	        <input type="text" size="4" class="card-expiry-year"/>
+	      </div>
+	      <div class='payment-errors'></div>
+	      <button type="submit" class="submit-button">Submit Payment</button>
+	    </form> -->
+ 	</div>
+</div>

@@ -1,0 +1,46 @@
+
+hello
+<html>
+<head>
+	<style type="text/css">
+		body {
+			background-color: black;
+			text-align: center;
+
+		}
+		h1 {
+			font-family: sans-serif;
+
+
+		}
+		a:link { 
+			text-decoration : none;
+			color: white
+		}
+		a:visited { 
+			text-decoration : none;
+			color: white
+		}
+		a:hover {
+			color: grey;
+		}
+
+		p {
+			color: white;
+		}
+
+	</style>
+</head>
+<form method='post' action='/users'>
+	<input name='name' type='text'>
+	<input name='age' type='text'>
+	<input value='Submit' type='submit'>
+</form>
+<% for (x in users){ %>
+<div>
+	<a href='/see/<%= users[x].id %>'><h1> <%= users[x].name %> </h1></a>
+	<p> <%= users[x].age %> </p>
+</div>
+<hr>
+<% } %>
+</html>
