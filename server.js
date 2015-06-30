@@ -3,6 +3,7 @@
 
 // require express and create the express app
 var express = require('express');
+
 var app = express();
 var path = require('path');
 // require bodyParser for handling post data
@@ -21,7 +22,7 @@ app.set('view engine', 'html');
 // require the mongoose config file that connects to the db and loads all of the models
 require('./config/mongoose');
 // require the routes file and pass it the express app
-require('./config/routes')(app);
+;
 
 	app.post('/users', function (req, res){
     console.log("POST DATA \n\n", req.body)
@@ -36,28 +37,5 @@ var server = app.listen(8004, function() {
 })
 
 var io = require('socket.io').listen(server)  
-
+require('./config/routes')(app, io)
 // Whenever a connection event happens (the connection event is built in) run the following code
-io.sockets.on('connection', function (socket) {
-	// socket.on('token', function(data) {
-	// 	console.log('here')
-	// 	stripe.charges.create({
-	// 	  amount: data.amount*100, // amount in cents, again
-	// 	  currency: "usd",
-	// 	  source: data.use,
-	// 	  description: "Example charge",
-	// 	  application_fee: 1
-	// 	}, function(err, charge) {
-	// 	  if (err && err.type === 'StripeCardError') {
-	// 	    console.log('declined');
-	// 	  }
-	// 	  else {
-	// 	  	console.log(charge)
-	// 	  	console.log(err)
-
-	// 	  }
-	// 	});
-	// 	// console.log(data.use);
-	// })
-  console.log("WE ARE USING SOCKETS!");
-})

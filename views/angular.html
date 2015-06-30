@@ -4,6 +4,7 @@
     <title></title>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
     <script src ="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/js/angular-local-storage.min.js"></script> 
     <script src ="http://code.angularjs.org/1.2.0-rc.2/angular-animate.js" type="text/javascript" charset="utf-8"></script>
     <script src ="http://code.angularjs.org/1.2.0-rc.2/angular-route.js" type="text/javascript" charset="utf-8"></script>
     <script src="/js/jquery.backstretch.min.js"></script>
@@ -23,6 +24,7 @@
         <script type ="text/javascript" src="/socket.io/socket.io.js"></script>
         <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
     <script>
+              var socket = io.connect();
     function outisde() {
         // $('.face').click(function(){
         //     alert('yolo');
@@ -30,16 +32,23 @@
     }
 
     //  inject the ngRoute dependency in the module.
-    var myApp = angular.module('myApp', ['ngAnimate', 'ngRoute']);
+    var myApp = angular.module('myApp', ['LocalStorageModule', 'ngAnimate', 'ngRoute']);
 
     //  use the config method to set up routing:
+    myApp.config(function (localStorageServiceProvider) {
+      localStorageServiceProvider
+        .setStorageType('localStorage');
+    });
     myApp.config(function ($routeProvider) {
       $routeProvider
         .when('/',{
             templateUrl: 'partials/home.html'
         })
-        .when('/partial2',{
+        .when('/donate',{
             templateUrl: 'partials/donate.html'
+        })
+        .when('/success',{
+            templateUrl: 'partials/success.html'
         })
         .otherwise({
           redirectTo: '/'
@@ -58,14 +67,41 @@
   }
 });
     //  build the controllers
-    myApp.controller('view1Controller', function ($scope) {
-      $scope.sports = ['golf', 'basketball', 'hockey', 'tennis', 'football'];
+    myApp.controller('view1Controller', function ($scope, localStorageService) {
+      $(document).ready(function() {
+              localStorageService.remove('access_to_success')
+              console.log(localStorageService.get('access_to_success'))
+      })
+      // $scope.sports = ['golf', 'basketball', 'hockey', 'tennis', 'football'];
     });
-    myApp.controller('view2Controller', function ($scope) {
+    myApp.controller('view2Controller', function ($scope, localStorageService, $window) {
+      // $(document).ready(function() {
+      //   if ($('#card-amount').val().length < 1 || $('#cc_number').val().length < 1 || $('#cc_exp_month').val().length < 1 || $('#cc_exp_year').val().length < 1 || $('#cc_name').val().length < 1 || $('#cc_cvc').val().length < 1) {
+      //       document.getElementById("submit_card").disabled = true;
+      //   }
+      //   else {
+      //       document.getElementById("submit_card").disabled = false;
+      //   };
+      // })
+
+      // $('.keydowns').keydown(function() {
+      //   console.log($('#cc_number').val())
+      //   if ($('#card-amount').val().length < 1 || $('#cc_number').val().length < 1 || $('#cc_exp_month').val().length < 1 || $('#cc_exp_year').val().length < 1 || $('#cc_name').val().length < 1 || $('#cc_cvc').val().length < 1) {
+      //       document.getElementById("submit_card").disabled = true;
+      //   }
+      //   else {
+      //       document.getElementById("submit_card").disabled = false;
+      //   };
+      // })
       Stripe.setPublishableKey('pk_test_F8rjks04ClaX8GkuyZeXK5FN');
-       var socket = io.connect();
+       
       $scope.message = 'We are using another controller';
       outisde();
+      socket.on('errors', function(data) {
+            console.log('reached back to client')
+            $('.payment-errors').text(data.details)
+            // alert('yolo')
+          })
       // function stripeResponseHandler(status, response) {
       //   var form = $('#skeuocard');
 
@@ -94,8 +130,16 @@
           });
         }
         $('#submit_card').click(function() {
-          console.log('button clicked');
-            $('#skeuocard').submit();
+          if ($('#card-amount').val().length < 1 || $('#cc_number').val().length < 1 || $('#cc_exp_month').val().length < 1 || $('#cc_exp_year').val().length < 1 || $('#cc_name').val().length < 1 || $('#cc_cvc').val().length < 1) {
+             $('.payment-errors').text('Please fill out remaining fields');
+         }
+         else {
+          $('.please_wait').text('Processing')
+            localStorageService.set('access_to_success', 'you may proceed');
+              console.log(localStorageService.get('access_to_success'))
+             $('#skeuocard').submit();
+         };
+            
         })
           var form = $('#skeuocard');
           form.on('submit', function() {
@@ -126,6 +170,24 @@
             //        // return false;
             //     })
         })
+
+        myApp.controller('view3Controller', function ($scope, localStorageService, $window) { 
+          socket.on('payload', function(data) {
+            console.log('received payload')
+            $('#amount').text('Amount: $' + data.details.amount/100)
+            $('#card_last_4').text('Card number: XXXX XXXX XXXX ' + data.details.source.last4)
+            $('#receipt_number').text('Receipt: ' + data.details.receipt_number)
+
+            console.log(data.details)
+            // alert('yolo')
+          })
+          console.log(localStorageService.get('access_to_success'))
+          if (localStorageService.get('access_to_success') == null) {
+
+            $window.location.href = '/'
+          }
+          localStorageService.remove('access_to_success')
+        })
   
     </script>
     <style type="text/css">
@@ -153,6 +215,11 @@
     #menu {
         background-color: white;
         /*position: fixed;*/
+    }
+    #contact_header {
+      text-decoration: underline;
+      font-weight: bold;
+      text-align: center;
     }
 
     .hvr-fade {
@@ -194,6 +261,10 @@
     html {
         display: none;
     }
+    .avy {
+      font-size: 25px;
+      text-align: center;
+    }
         body {
             padding: 0;
             margin: 0;
@@ -217,7 +288,7 @@
             </div>
             <div id='options'>
                 <a class='hvr-fade' href="#/">Home</a>
-                  <a class='hvr-fade' href="#/partial2">Donate</a>
+                  <a class='hvr-fade' href="#/donate">Donate</a>
                   <a class='hvr-fade' id='hello' href="#/modal">Contact</a>
             </div>
         </div>
@@ -248,7 +319,7 @@
             showClose: true,
             showCloseText: 'X',
             onBlurContainer: '#holder',
-            template: '<p>So implement your design and place content here! If you want to close modal, please hit "Esc", click somewhere on the screen or use special button.</p>' +
+            template: '<br><h1 id="contact_header">Contact</h1><br><p class="avy">Address: 44 Oba Akran Ave, Lagos.</p><p class="avy">Email: Ken@kenbello.com</p><p class="avy">Phone: +2348083955655</p>' +
             '<div>' +
             '</div>'
         });

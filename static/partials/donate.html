@@ -65,6 +65,33 @@
  			color: white;
  		}
 
+ 		.payment-errors {
+ 			text-align: center;
+ 			font-weight: bold;
+ 			font-size: 30px;
+ 		}
+
+ 		.please_wait {
+ 			color: green;
+ 			font-weight: bold;
+ 			text-align: center;
+ 			font-size: 40px;
+ 			animation-duration: 1200ms;
+			  animation-name: blink;
+			  animation-iteration-count: infinite;
+			  animation-direction: alternate;
+ 		}
+
+ 		@keyframes blink {
+		  from {
+		    opacity: 1;
+		  }
+
+		  to {
+		    opacity: 0;
+		  }
+		}
+
  	</style>
  </head>
  <div ng-controller='view2Controller'>
@@ -72,7 +99,7 @@
  		 		<h1 style='text-align: center; color: #2098d1; background-color: white; border: solid 4px #2098d1; border-radius: 10px'> Donate </h1>
  		 		<p id='steps'>Steps</p>
  		 		<div id='listed_steps'>
- 		 			<p>1. Enter an amount(in NGN)</p>
+ 		 			<p>1. Enter an amount(in USD)</p>
  		 			<p>2. Type in credit/debit card number</p>
  		 			<p>3. Type in Expiration Date</p>
  		 			<p>4. Type in Name on Card</p>
@@ -82,9 +109,11 @@
  		 		<div class='headers'>
  		 			<h2>Amount</h2>
  		 			<form class="pure-form">
- 		 			<input id='card-amount' placeholder='$0.00' type='text'>
+ 		 			<input pattern='[0-9]*' class='keydowns' id='card-amount' size='10' placeholder='$0.00' type='text'>
  		 		</form>
  		 		</div><br>
+ 		 		<div class="payment-errors" style="color:red;"></div>
+
  		 		
  		 		<!-- <form id="checkout" method="post" action="/checkout">
   <div id="payment-form"></div>
@@ -116,9 +145,9 @@
                     	<h2>Card Info</h2>
                     </div>
                      	<form class="credit-card-input no-js card-tds-form" id="skeuocard" action="/charge" method="POST">
-			            <p class="no-support-warning">
+			            <!-- <p class="no-support-warning">
 			              Either you have Javascript disabled, or you're using an unsupported browser, amigo! That's why you're seeing this old-school credit card input form instead of a fancy new Skeuocard. On the other hand, at least you know it gracefully degrades...
-			            </p>
+			            </p> -->
 			            <label for="cc_type">Card Type</label>
 			            <select name="cc_type">
 			              <option value="">...</option>
@@ -132,19 +161,19 @@
 			              <option value="dinersclubintl">Diners Club</option>
 			            </select>
 			            <label for="cc_number">Card Number</label>
-			            <input type="text" data-stripe="number" name="cc_number" id="cc_number" placeholder="XXXX XXXX XXXX XXXX" maxlength="19" size="19">
+			            <input class='keydowns' type="text" data-stripe="number" name="cc_number" id="cc_number" placeholder="XXXX XXXX XXXX XXXX" maxlength="19" size="19">
 			            <label for="cc_exp_month">Expiration Month</label>
-			            <input type="text" data-stripe="exp-month" name="cc_exp_month" id="cc_exp_month" placeholder="00">
+			            <input class='keydowns' type="text" data-stripe="exp-month" name="cc_exp_month" id="cc_exp_month" placeholder="00">
 			            <label for="cc_exp_year">Expiration Year</label>
-			            <input type="text" name="cc_exp_year" data-stripe="exp-year" id="cc_exp_year" placeholder="00">
+			            <input class='keydowns' type="text" name="cc_exp_year" data-stripe="exp-year" id="cc_exp_year" placeholder="00">
 			            <label for="cc_name">Cardholder's Name</label>
-			            <input type="text" name="cc_name" id="cc_name" placeholder="John Doe">
+			            <input class='keydowns' type="text" name="cc_name" id="cc_name" placeholder="John Doe">
 			            <label for="cc_cvc">Card Validation Code</label>
-			            <input type="text" data-stripe="cvc" name="cc_cvc" id="cc_cvc" placeholder="123" maxlength="3" size="3">	  
+			            <input class='keydowns' type="text" data-stripe="cvc" name="cc_cvc" id="cc_cvc" placeholder="123" maxlength="3" size="3">	  
 			            </form>
+			            <div class='please_wait'></div>
 			            <div id='button_holder'><button class="pure-button submit-button btn btn-1 btn-1a" id='submit_card' type="submit">Submit</button></div>
 			            <!-- <div class="payment-token" style="color:green;">Token:</div> -->
-<div class="payment-errors" style="color:red;"></div>
  		<!-- <form action="/stripe" method="POST" id="payment-form">
 	      <div class="form-row">
 	        <label>Card Number</label>

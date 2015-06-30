@@ -9,7 +9,7 @@ var stripe = require("stripe")("sk_test_PIM4B5MJsDJSWsQ7ABuViwnb");
 // 	  privateKey: "f145b0307557b81cf3717e8fef944635"
 // 	});
 
-module.exports = function(app) {
+module.exports = function(app, io) {
 	var id_customer;
 	app.get('/', function(req, res) {
 		// gateway.customer.create({
@@ -48,9 +48,39 @@ module.exports = function(app) {
 	    },
 	    function(err, charge) {
 	        if (err) {
-	            res.send(500, err);
+	        	console.log('error')
+	        	res.redirect('/#/donate');
+	            io.sockets.on('connection', function (socket) {
+	            	socket.emit('errors', {details: 'Charge not processed. Please check card information'})
+	            })
 	        } else {
-	            res.send(204);
+	        	console.log(charge)
+	            res.redirect('/#/success');
+	            io.sockets.on('connection', function (socket) {
+	            	socket.emit('payload', {details: charge})
+					// socket.on('token', function(data) {
+					// 	console.log('here')
+					// 	stripe.charges.create({
+					// 	  amount: data.amount*100, // amount in cents, again
+					// 	  currency: "usd",
+					// 	  source: data.use,
+					// 	  description: "Example charge",
+					// 	  application_fee: 1
+					// 	}, function(err, charge) {
+					// 	  if (err && err.type === 'StripeCardError') {
+					// 	    console.log('declined');
+					// 	  }
+					// 	  else {
+					// 	  	console.log(charge)
+					// 	  	console.log(err)
+
+					// 	  }
+					// 	});
+					// 	// console.log(data.use);
+					// })
+				  console.log("WE ARE USING SOCKETS!");
+				})
+	            // io.
 	        }
 	    });
 	});
